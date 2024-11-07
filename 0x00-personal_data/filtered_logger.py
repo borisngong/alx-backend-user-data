@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """A module for filtering logs."""
 
-import os
 import re
 import logging
 from typing import List
@@ -11,7 +10,7 @@ PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
 class RedactingFormatter(logging.Formatter):
-    """ Redacting Formatter class for sensitive data"""
+    """Redacting Formatter class for sensitive data"""
 
     REDACTION = "***"
     FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
@@ -22,9 +21,9 @@ class RedactingFormatter(logging.Formatter):
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
-        # Format the log record message using the base class format
+        # First format the message
         original_message = super().format(record)
-        # Redact sensitive information
+        # Apply redaction to sensitive information
         redacted_message = filter_datum(self.fields,
                                         self.REDACTION,
                                         original_message,
@@ -35,14 +34,14 @@ class RedactingFormatter(logging.Formatter):
 def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
     """
-    Responsible for Filtering a log line.
+    Filters sensitive fields in a log line.
     """
-    pattern = r'(?P<field>{})=[^{}]*'.format('|'.join(fields), separator)
-    return re.sub(pattern, r'\g<field>={}'.format(redaction), message)
+    pattern = r'({})=[^{}]*'.format('|'.join(fields), separator)
+    return re.sub(pattern, r'\1={}'.format(redaction), message)
 
 
 def get_logger() -> logging.Logger:
-    """Creates a logger for user data with a RedactingFormatter"""
+    """Creates a logger for user data with a RedactingFormatter."""
     logger = logging.getLogger("user_data")
     logger.setLevel(logging.INFO)
     logger.propagate = False
