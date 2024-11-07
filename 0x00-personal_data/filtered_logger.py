@@ -104,37 +104,5 @@ def main():
             info_logger.handle(log_record)
 
 
-class RedactingFormatter(logging.Formatter):
-    """Redacting Formatter class to redact PII fields in logs."""
-
-    REDACTION = "***"  # Redaction placeholder for sensitive fields
-    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
-    FORMAT_FIELDS = ('name', 'levelname', 'asctime', 'message')
-    SEPARATOR = ";"  # Separator for log fields
-
-    def __init__(self, fields: List[str]):
-        """Initializes the formatter with fields to redact.
-
-        Args:
-            fields (List[str]): List of fields to redact in log messages.
-        """
-        super(RedactingFormatter, self).__init__(self.FORMAT)
-        self.fields = fields
-
-    def format(self, record: logging.LogRecord) -> str:
-        """Formats a log record with redacted PII fields.
-
-        Args:
-            record (logging.LogRecord): The log record to be formatted.
-
-        Returns:
-            str: The redacted log message.
-        """
-        msg = super(RedactingFormatter, self).format(record)
-        # Apply redaction to PII fields in the log message
-        txt = filter_datum(self.fields, self.REDACTION, msg, self.SEPARATOR)
-        return txt
-
-
 if __name__ == "__main__":
     main()
