@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """A module for filtering logs."""
+
+
 import os
 import re
 import logging
@@ -32,7 +34,7 @@ patterns = {
     'extract': lambda x, y: r'(?P<field>{})=[^{}]*'.format('|'.join(x), y),
     'replace': lambda x: r'\g<field>={}'.format(x),
 }
-PII_FIELDS = ("email", "phone", "ssn", "name", "password")
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
 def filter_datum(
