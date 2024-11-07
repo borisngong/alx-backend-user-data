@@ -5,7 +5,7 @@ import re
 import logging
 from typing import List
 
-# Define PII_FIELDS constant with sensitive fields
+# Define PII_FIELDS constant with sensitive field
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
