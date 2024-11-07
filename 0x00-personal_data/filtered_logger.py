@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """A module for filtering logs."""
 
-
 import os
 import re
 import logging
 from typing import List
+
+# Define PII_FIELDS constant with sensitive fields
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
 class RedactingFormatter(logging.Formatter):
@@ -30,20 +32,13 @@ class RedactingFormatter(logging.Formatter):
         return redacted_message
 
 
-patterns = {
-    'extract': lambda x, y: r'(?P<field>{})=[^{}]*'.format('|'.join(x), y),
-    'replace': lambda x: r'\g<field>={}'.format(x),
-}
-PII_FIELDS = ("name", "email", "phone", "ssn", "password")
-
-
 def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
     """
     Responsible for Filtering a log line.
     """
-    extract, replace = (patterns["extract"], patterns["replace"])
-    return re.sub(extract(fields, separator), replace(redaction), message)
+    pattern = r'(?P<field>{})=[^{}]*'.format('|'.join(fields), separator)
+    return re.sub(pattern, r'\g<field>={}'.format(redaction), message)
 
 
 def get_logger() -> logging.Logger:
