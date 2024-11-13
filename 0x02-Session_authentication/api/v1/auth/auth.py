@@ -4,6 +4,7 @@
 import re
 from typing import List, TypeVar
 from flask import request
+import os
 
 
 class Auth:
@@ -27,7 +28,8 @@ class Auth:
         return True
 
     def authorization_header(self, request=None) -> str:
-        """Gets the authorization header field from the request.
+        """
+        Gets the authorization header field from the request.
         """
         if request is not None:
             return request.headers.get('Authorization', None)
@@ -38,3 +40,15 @@ class Auth:
         Gets the current user from the request
         """
         return None
+    
+    def session_cookie(self, request=None):
+        """
+        Retrieve the session cookie value from the request
+        """
+        if request is None:
+            return None
+        
+        # Get the cookie name from the environment variable
+        cookie_name = os.getenv('SESSION_NAME', '_my_session_id')
+        # Return the cookie value using the .get() method
+        return request.cookies.get(cookie_name)
