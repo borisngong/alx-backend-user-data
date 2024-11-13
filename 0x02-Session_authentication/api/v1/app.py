@@ -32,11 +32,13 @@ def authenticate_user():
             '/api/v1/status/',
             '/api/v1/unauthorized/',
             '/api/v1/forbidden/',
+            '/api/v1/auth_session/login/',
         ]
         if auth.require_auth(request.path, excluded_paths):
-            # Check for the authorization header
+            # Check for the authorization header and cookie
             auth_header = auth.authorization_header(request)
-            if auth_header is None:
+            session_cookie = auth.session_cookie(request)
+            if auth_header is None and session_cookie is None:
                 abort(401)  # Unauthorized
             # Check if user is valid
             user = auth.current_user(request)
