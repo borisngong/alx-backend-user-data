@@ -20,7 +20,7 @@ if auth_type == 'auth':
     auth = Auth()
 elif auth_type == 'basic_auth':
     auth = BasicAuth()
-elif auth_type == 'seseion_auth':
+elif auth_type == 'session_auth':
     auth = SessionAuth()
 
 
