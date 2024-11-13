@@ -26,18 +26,22 @@ def authenticate_user():
     """Authenticates a user before processing a request."""
     if auth:
         excluded_paths = [
-            "/api/v1/status/",
-            "/api/v1/unauthorized/",
-            "/api/v1/forbidden/",
+            '/api/v1/status/',
+            '/api/v1/unauthorized/',
+            '/api/v1/forbidden/',
         ]
         if auth.require_auth(request.path, excluded_paths):
+            # Check for the authorization header
+            auth_header = auth.authorization_header(request)
+            if auth_header is None:
+                abort(401)  # Unauthorized
+            # Check if user is valid
             user = auth.current_user(request)
-            if auth.authorization_header(request) is None and \
-                    auth.session_cookie(request) is None:
-                abort(401)
             if user is None:
-                abort(403)
+                abort(403)  # Forbidden
+            # Store the authenticated user in the request
             request.current_user = user
+
 
 
 @app.errorhandler(404)
