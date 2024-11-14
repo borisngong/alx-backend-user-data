@@ -26,7 +26,9 @@ elif auth_type == 'session_auth':
 
 @app.before_request
 def authenticate_user():
-    """Authenticates a user before processing a request."""
+    """
+    Authenticates a user before processing a request
+    """
     if auth:
         excluded_paths = [
             '/api/v1/status/',
