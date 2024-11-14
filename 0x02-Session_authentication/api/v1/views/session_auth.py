@@ -1,4 +1,5 @@
-# api/v1/views/session_auth.py
+#!/usr/bin/env python3
+"""Module of session authenticating views"""
 
 import os
 from typing import Tuple
@@ -8,7 +9,7 @@ from api.v1.views import app_views
 
 @app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
 def login() -> Tuple[str, int]:
-    """Handles login request with Session ID authentication."""
+    """Handles login request with Session ID authentication"""
     email = request.form.get('email')
     if not email or email.strip() == "":
         return jsonify({"error": "email missing"}), 400
@@ -39,7 +40,7 @@ def login() -> Tuple[str, int]:
 @app_views.route('/auth_session/logout',
                  methods=['DELETE'], strict_slashes=False)
 def logout() -> Tuple[str, int]:
-    """Handles logout request by destroying session."""
+    """Handles logout request by destroying session"""
     from api.v1.app import auth
     if not auth.destroy_session(request):
         abort(404)
