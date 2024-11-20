@@ -45,6 +45,7 @@ class DB:
             new_user = None
         return new_user
 
+
     def find_user_by(self, **kwargs) -> User:
     """Finds a user based on a set of filters."""
     try:
