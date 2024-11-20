@@ -77,19 +77,28 @@ class DB:
 
         return result
 
-    def update_user(self, user_id: int, **kwargs) -> User:
+    from sqlalchemy.exc import NoResultFound, InvalidRequestError
+
+    def update_user(self, user_id: int, **kwargs) -> None:
         """
-        Responsible for updating a user in the database
+        Responsible for updating a user based on a given id
         """
-        try:
-            user = self._sesion.query.filter(user_id == user_id).first()
-            for key, value in kwargs.items():
-                if hasattr(user, key):
-                    setattr(user, key, value)
-                else:
-                    raise InvalidRequestError(f"Invalid field: {key}")
-                    self._session.commit()
-        except Exception:
-            self._session.rollback()
-            user = None
-        return user
+        user = self.find_user_by(id=user_id)
+        
+        # If user is not found, raise an exception
+        if user is None:
+            raise NoResultFound(f"User  with id {user_id} not found.")
+
+        update_source = {}
+        for key, value in kwargs.items():
+            if hasattr(User, key):
+                update_source[getattr(User, key)] = value
+            else:
+                raise ValueError(f"Invalid field: {key}")
+
+        # Perform the update
+        self._session.query(User).filter(User.id == user_id).update(
+            update_source,
+            synchronize_session=False,
+        )
+        self._session.commit()
