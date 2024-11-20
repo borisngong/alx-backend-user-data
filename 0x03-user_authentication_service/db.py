@@ -76,3 +76,20 @@ class DB:
             raise NoResultFound("No user found matching the criteria.")
 
         return result
+
+    def update_user(self, user_id: int, **kwargs) -> User:
+        """
+        Responsible for updating a user in the database
+        """
+        try:
+            user = self._sesion.query.filter(user_id == user_id).first()
+            for key, value in kwargs.items():
+                if hasattr(user, key):
+                    setattr(user, key, value)
+                else:
+                    raise InvalidRequestError(f"Invalid field: {key}")
+                    self._session.commit()
+        except Exception:
+            self._session.rollback()
+            user = None
+        return user
