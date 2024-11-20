@@ -82,7 +82,7 @@ class DB:
         Responsible for updating a user based on a given id
         """
         user = self.find_user_by(id=user_id)
-        
+
         # If user is not found, raise an exception
         if user is None:
             raise NoResultFound(f"User  with id {user_id} not found.")
