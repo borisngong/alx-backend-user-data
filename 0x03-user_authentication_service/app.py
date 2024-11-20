@@ -19,7 +19,7 @@ def index():
 
 
 @app.route('/user', methods=['POST'], strict_slashes=False)
-def users():
+def users() -> str:
     """
     Endpoint to register a User, which expects email and pw
     in form data
@@ -31,8 +31,8 @@ def users():
     try:
         user = AUTH.register(email, password)
         return jsonify({"email": user.email, "message": "user created"}), 200
-    except ValueError as err:
-        return jsonify({"error": str(err)}), 400
+    except ValueError:
+        return jsonify({"message": "email already registered"}), 400
 
 
 if __name__ == '__main__':
