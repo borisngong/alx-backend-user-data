@@ -18,19 +18,17 @@ def index():
     return jsonify({"message": "Bienvenue"})
 
 
-@app.route('/users', methods=['POST'], strict_slashes=False)
+@app.route("/users", methods=["POST"], strict_slashes=False)
 def users() -> str:
+    """POST /users
+    Return:
+        - The account creation payload.
     """
-    Endpoint to register a User, which expects email and pw
-    in form data
-    """
-    email = request.get.form('email')
-    password = request.get.form('password')
-    if not email or not password:
-        return jsonify({"error": "email and password are required"}), 400
+    email = request.form.get("email")
+    password = request.form.get("password")
     try:
-        user = AUTH.register(email, password)
-        return jsonify({"email": user.email, "message": "user created"}), 200
+        AUTH.register_user(email, password)
+        return jsonify({"email": email, "message": "user created"})
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
 
