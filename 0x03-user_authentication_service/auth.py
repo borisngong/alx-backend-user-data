@@ -16,13 +16,17 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-    def _hash_password(self, password: str) -> bytes:
-        """
-        Hashes a password using bcrypt
-        """
-        salt = bcrypt.gensalt()
-        hashed_pw = bcrypt.hashpw(password.encode('utf-8'), salt)
-        return hashed_pw
+import bcrypt
+
+def _hash_password(password: str) -> bytes:
+    """
+    Responsible for Hashing a password using bcrypt
+    """
+    # Generate a salt
+    salt = bcrypt.gensalt()
+    # Hash the password with the generated salt
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed_password
 
     def register_user(self, email: str, password: str) -> User:
         """
