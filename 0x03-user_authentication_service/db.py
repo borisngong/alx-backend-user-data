@@ -77,8 +77,6 @@ class DB:
 
         return result
 
-    from sqlalchemy.exc import NoResultFound, InvalidRequestError
-
     def update_user(self, user_id: int, **kwargs) -> None:
         """
         Responsible for updating a user based on a given id
