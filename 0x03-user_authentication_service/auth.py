@@ -18,13 +18,7 @@ class Auth:
 
     def _hash_password(self, password: str) -> bytes:
         """
-        Hashes a password using bcrypt.
-
-        Args:
-            password (str): The password to hash.
-
-        Returns:
-            bytes: The salted hash of the password.
+        Responsible for Hashing a password using bcrypt
         """
         salt = bcrypt.gensalt()
         hashed_pw = bcrypt.hashpw(password.encode('utf-8'), salt)
@@ -32,17 +26,7 @@ class Auth:
 
     def register_user(self, email: str, password: str) -> User:
         """
-        Responsible for registering a user.
-
-        Args:
-            email (str): The email of the user.
-            password (str): The password of the user.
-
-        Returns:
-            User: The created User object.
-
-        Raises:
-            ValueError: If a user with the given email already exists.
+        Responsible for registering a user
         """
         try:
             # Check if the user already exists
