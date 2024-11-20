@@ -36,20 +36,20 @@ class DB:
 
     def add_user(self, email: str, hashed_password: str) -> User:
         """
-        Add a new user to the database.
+        Add a new user to the database
 
         Args:
-            email (str): The user's email address.
-            hashed_password (str): The user's hashed password.
+            email (str): The user's email address
+            hashed_password (str): The user's hashed password
 
         Returns:
-            User: The User object that was added to the database.
+            User: The User object that was added to the database
         """
-        # Create a new User object
-        new_user = User(email=email, hashed_password=hashed_password)
-
-        # Add and commit the user to the database
-        self._session.add(new_user)
-        self._session.commit()
-        # Return the newly created user
+        try:
+            new_user = User(email=email, hashed_password=hashed_password)
+            self._session.add(new_user)
+            self._session.commit()
+        except Exception:
+            self._session.rollback()
+            new_user = None
         return new_user
