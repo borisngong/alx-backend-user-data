@@ -33,7 +33,8 @@ class DB:
         return self.__session
 
     def add_user(self, email: str, hashed_password: str) -> User:
-        """Adds a new user to the database.
+        """
+        Responsible for adding  a new user to the database
         """
         try:
             new_user = User(email=email, hashed_password=hashed_password)
@@ -43,3 +44,13 @@ class DB:
             self._session.rollback()
             new_user = None
         return new_user
+
+    def find_user_by(self, **kwargs) -> User:
+        """
+        Responsible for searching the database for a User
+        """
+        try:
+            user = self._session.query(User).filter_by(**kwargs).one()
+        except NoResultFound:
+            user = None
+        return user
