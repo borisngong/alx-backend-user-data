@@ -16,7 +16,6 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-import bcrypt
 
 def _hash_password(password: str) -> bytes:
     """
@@ -28,15 +27,13 @@ def _hash_password(password: str) -> bytes:
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
     return hashed_password
 
-    def register_user(self, email: str, password: str) -> User:
+
+def register_user(self, email: str, password: str) -> User:
         """
-        Responsible for registering a user
+        Register a new user to the database
         """
         try:
-            user = self._db.find_user_by(email=email)
-            raise ValueError(f"User  {email} already exists")
+            self._db.find_user_by(email=email)
         except NoResultFound:
-            hashed_password = self._hash_password(password)
-            new_user = User(email=email, hashed_password=hashed_password)
-            self._db.add_user(new_user)
-            return new_user
+            return self._db.add_user(email, _hash_password(password))
+        raise ValueError("User {} already exists".format(email))
