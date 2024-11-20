@@ -17,19 +17,14 @@ def index():
     """
     return jsonify({"message": "Bienvenue"})
 
+
 @app.route('/users', methods=['POST'], strict_slashes=False)
 def users():
     """
-    POST /users endpoint to register a user.
+    POST /users endpoint to register a user
     Expects:
     - email: The user's email (form data)
     - password: The user's password (form data)
-    
-    Response:
-    - If successful, returns a JSON payload:
-        {"email": "<email>", "message": "user created"}
-    - If email already exists:
-        {"message": "email already registered"} (400 status code)
     """
     email = request.form.get("email")
     password = request.form.get("password")
