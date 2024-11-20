@@ -18,13 +18,13 @@ def _hash_password(self, password: str) -> bytes:
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
     return hashed_password
 
+
 class Auth:
     """Auth class to interact with the authentication database.
     """
 
     def __init__(self):
         self._db = DB()
-
 
     def register_user(self, email: str, password: str) -> User:
         """
