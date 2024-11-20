@@ -21,19 +21,18 @@ class Auth:
         Responsible for Hashing a password using bcrypt
         """
         salt = bcrypt.gensalt()
-        hashed_pw = bcrypt.hashpw(password.encode('utf-8'), salt)
-        return hashed_pw
+
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+        return hashed_password
 
     def register_user(self, email: str, password: str) -> User:
         """
         Responsible for registering a user
         """
         try:
-            # Check if the user already exists
             self._db.find_user_by(email=email)
             raise ValueError(f"User  {email} already exists")
         except NoResultFound:
-            # User does not exist, proceed to create a new one
             hashed_password = self._hash_password(password)
             new_user = User(email=email, hashed_password=hashed_password)
             self._db.add_user(new_user)
