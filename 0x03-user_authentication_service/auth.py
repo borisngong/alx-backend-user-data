@@ -1,11 +1,26 @@
+#!/usr/bin/env python3
+"""
+Module for working with authentication
+"""
+
+from sqlalchemy.orm.exc import NoResultFound
+from db import DB
+from user import User
+import bcrypt
+from uuid import uuid4
+
+
 def _hash_password(password: str) -> bytes:
-    """Hashes a password.
+    """Hashes a password using bcrypt
     """
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
+    return hashed_password
 
 
 def _generate_uuid() -> str:
-    """Generates a UUID.
+    """
+    Responsible for generating a unique identifier
     """
     return str(uuid4())
 
@@ -20,7 +35,8 @@ class Auth:
         self._db = DB()
 
     def register_user(self, email: str, password: str) -> User:
-        """Adds a new user to the database.
+        """
+        Responsible for registering a new user
         """
         try:
             self._db.find_user_by(email=email)
