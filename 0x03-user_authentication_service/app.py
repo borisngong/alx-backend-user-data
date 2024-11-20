@@ -20,13 +20,19 @@ def index():
 
 @app.route("/users", methods=["POST"], strict_slashes=False)
 def users() -> str:
+    """POST /users
+    Return:
+        - The account creation payload.
     """
-    Endpoint to register a user, Expects 'email' and 'password' in form dat
-    """
-    email, password = request.form.get("email"), request.form.get("password")
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    if not email or not password:
+        return jsonify({"message": "email and password are required"}), 400
+
     try:
         AUTH.register_user(email, password)
-        return jsonify({"email": email, "message": "user created"})
+        return jsonify({"email": email, "message": "user created"}), 200
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
 
