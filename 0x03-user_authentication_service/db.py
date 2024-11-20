@@ -46,11 +46,19 @@ class DB:
         return new_user
 
     def find_user_by(self, **kwargs) -> User:
-        """
-        Responsible for searching the database for a User
-        """
-        try:
-            user = self._session.query(User).filter_by(**kwargs).one()
-        except NoResultFound:
-            user = None
-        return user
+    """Finds a user based on a set of filters."""
+    try:
+        # Validate the provided filters
+        for key in kwargs:
+            if not hasattr(User, key):
+                raise InvalidRequestError(f"Invalid attribute: {key}")
+        
+        # Query the database
+        result = self._session.query(User).filter_by(**kwargs).first()
+        if result is None:
+            raise NoResultFound()
+        return result
+    except InvalidRequestError as e:
+        raise e
+    except Exception as e:
+        raise InvalidRequestError(f"Error querying user: {e}")
