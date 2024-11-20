@@ -7,7 +7,7 @@ from auth import Auth
 
 
 app = Flask(__name__)
-auth = Auth()
+Auth = Auth()
 
 
 @app.route('/', methods=['GET'], strict_slashes=False)
@@ -16,6 +16,23 @@ def index():
     Responsible for handling the get route
     """
     return jsonify({"message": "Bienvenue"})
+
+
+@app.route('/user', methods=['POST'], strict_slashes=False)
+def users():
+    """
+    Endpoint to register a User, which expects email and pw
+    in form data
+    """
+    email = request.get.form('email')
+    password = request.get.form('password')
+    if not email or not password:
+        return jsonify({"error": "email and password are required"}), 400
+    try:
+        user = AUTH.register(email, password)
+        return jsonify({"email": user.email, "message": "user created"}), 200
+    except ValueError as err:
+        return jsonify({"error": str(err)}), 400
 
 
 if __name__ == '__main__':
