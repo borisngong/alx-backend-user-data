@@ -39,27 +39,30 @@ def users():
         return jsonify({"message": "email already registered"}), 400
 
 
-@app.route("/sessions", methods=["POST"], strict_slashes=False)
-def login() -> str:
+@app.route('/sessions', methods=['POST'])
+def login():
     """
-    POST /sessions route for logging in a user
+    POST /sessions route to log in a user.
+    Validates user credentials and creates a session.
     """
-    # Retrieve email and password from the request form
-    email = request.form.get("email")
-    password = request.form.get("password")
+    email = request.form.get('email')
+    password = request.form.get('password')
 
-    # Validate login credentials using the AUTH service
+    # Validate input
+    if not email or not password:
+        return jsonify({"message": "email and password are required"}), 401
+
+    # Authenticate user credentials
     if not AUTH.valid_login(email, password):
-        # If credentials are invalid, respond with HTTP 401 Unauthorized
-        abort(401)
+        return jsonify({"message": "invalid credentials"}), 401
 
-    # Create a session ID for the user
+    # Create a session for the user
     session_id = AUTH.create_session(email)
+    if session_id is None:
+        return jsonify({"message": "session creation failed"}), 401
 
-    # Prepare a JSON response indicating successful login
+    # Prepare the response with the session ID as a cookie
     response = jsonify({"email": email, "message": "logged in"})
-
-    # Set the session_id as a cookie in the response
     response.set_cookie("session_id", session_id)
 
     return response
