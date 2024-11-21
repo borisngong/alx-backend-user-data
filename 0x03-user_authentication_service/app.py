@@ -81,7 +81,7 @@ def logout():
 
     # Find the user associated with the session ID
     user_email = AUTH.get_user_from_session(session_id)
-    
+
     if user_email is None:
         return jsonify({"message": "session not found"}), 403
 
