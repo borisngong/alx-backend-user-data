@@ -118,22 +118,24 @@ def update_password() -> str:
     Responsible for handling password reset requests by validating the
     reset token and updating the user's password
     """
+    # Retrieve form data
     email = request.form.get("email")
     reset_token = request.form.get("reset_token")
     new_password = request.form.get("new_password")
-
+    
+    # Check if all required fields are provided
     if not email or not reset_token or not new_password:
-        abort(400, description="Missing email, reset_token, or new_password.")
-
+        abort(400, description="Missing required fields")
+    
     try:
-        # Update the user's password using the AUTH service
+        # Attempt to update the password using the provided information
         AUTH.update_password(email, reset_token, new_password)
     except ValueError:
-        # If the reset token is invalid, respond with 403
-        abort(403, description="Invalid reset token or email.")
-
-    # Respond with a success message if password update is successful
-    return jsonify({"email": email, "message": "Password updated"}), 200
+        # Invalid token or email, returning Forbidden status
+        abort(403, description="Invalid reset token")
+    
+    # If everything is successful, return the success response
+    return jsonify({"email": email, "message": "Password updated"})
 
 
 
