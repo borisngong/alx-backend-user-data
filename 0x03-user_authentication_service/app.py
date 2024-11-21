@@ -2,7 +2,7 @@
 """
 Module for Flask app for user authentication
 """
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, redirect, abort
 from auth import Auth
 
 AUTH = Auth()
@@ -34,7 +34,7 @@ def users():
 
     try:
         AUTH.register_user(email, password)
-        return jsonify({"email": email, "message": "user created"}), 200
+        return jsonify({"email": email, "message": "user created"}), 201
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
 
@@ -89,7 +89,7 @@ def logout() -> str:
     AUTH.destroy_session(user_email)
 
     # Redirect to the home page
-    return redirect('/')
+    return jsonify({"message": "logged out"}), 204
 
 
 @app.route("/profile", methods=["GET"], strict_slashes=False)
@@ -99,7 +99,7 @@ def profile() -> str:
         - The user's profile information.
     """
     session_id = request.cookies.get("session_id")
-    user = AUTH.get_user_from_session_id(session_id)
+    user = AUTH.get_user_from_session(session_id)
     if user is None:
         abort(403)
     return jsonify({"email": user.email}), 200
@@ -132,7 +132,7 @@ def update_password() -> str:
     new_password = request.form.get("new_password")
 
     if not email or not reset_token or not new_password:
-        abort(400)
+        abort(400, "All fields are required")
 
     try:
         AUTH.update_password(reset_token, new_password)
