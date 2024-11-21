@@ -68,17 +68,22 @@ def login():
     return response
 
 
-@app.route("/sessions", methods=["DELETE"], strict_slashes=False)
-def logout() -> str:
+@app.route('/sessions', methods=['DELETE'])
+def logout():
     """
-    POST /sessions route for logging in a user
+    DELETE /sessions route to log out a user.
+    Deletes the session cookie.
     """
     session_id = request.cookies.get("session_id")
-    user = AUTH.get_user_from_session_id(session_id)
-    if user is None:
-        abort(403)
-    AUTH.destroy_session(user.id)
-    return redirect("/")
+    if session_id is None:
+        return jsonify({"message": "session cookie not set"}), 401
+
+    AUTH.destroy_session(session_id)
+
+    response = jsonify({"message": "logout successful"})
+    response.delete_cookie("session_id")
+
+    return response
 
 
 if __name__ == '__main__':
