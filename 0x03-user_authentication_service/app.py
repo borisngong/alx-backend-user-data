@@ -68,5 +68,29 @@ def login():
     return response
 
 
+@app.route('/sessions', methods=['DELETE'])
+def logout():
+    """
+    DELETE /sessions route to log out a user.
+    Destroys the user session based on the session ID in the cookie.
+    """
+    session_id = request.cookies.get('session_id')
+
+    if not session_id:
+        return jsonify({"message": "session_id is required"}), 403
+
+    # Find the user associated with the session ID
+    user_email = AUTH.get_user_from_session(session_id)
+
+    if user_email is None:
+        return jsonify({"message": "session not found"}), 403
+
+    # Destroy the session
+    AUTH.destroy_session(user_email)
+
+    # Redirect to the home page
+    return redirect('/')
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
