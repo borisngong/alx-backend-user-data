@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Module for Flask app for user authentication
+Module for working with Flask app's user authentication
 """
 from flask import Flask, jsonify, request, abort, redirect
 from auth import Auth
@@ -13,7 +13,7 @@ app = Flask(__name__)
 @app.route('/', methods=['GET'], strict_slashes=False)
 def index():
     """
-    Handles the root GET route.
+    Responsible for handling the root route
     """
     return jsonify({"message": "Bienvenue"})
 
@@ -41,9 +41,8 @@ def users():
 
 @app.route("/sessions", methods=["POST"], strict_slashes=False)
 def login() -> str:
-    """POST /sessions
-    Return:
-        - The account login payload.
+    """
+    Responsible for handling user login
     """
     email, password = request.form.get("email"), request.form.get("password")
     if not AUTH.valid_login(email, password):
@@ -81,6 +80,22 @@ def profile():
         abort(403)
     user_profile = jsonify({"email": user.email}), 200
     return user_profile
+
+
+@app.route('/reset_password', methods=['POST'])
+def get_reset_password_token():
+    # Retrieve email from the form data
+    email = request.form.get('email')
+
+    if not email or email not in users:
+        abort(403, description="Email not registered")
+
+    # Generate a reset token
+    reset_token = str(uuid.uuid4())
+    reset_tokens[email] = reset_token
+
+    # Respond with the reset token
+    return jsonify({"email": email, "reset_token": reset_token}), 200
 
 
 if __name__ == '__main__':
