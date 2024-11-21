@@ -74,12 +74,10 @@ def logout() -> str:
 def profile():
     # Retrieve the session_id from cookies
     session_id = request.cookies.get('session_id')
+    user = AUTH.get_user_from_session_id(session_id)
 
-    if not session_id or session_id not in sessions:
+    if user is None:
         abort(403)
-
-    # Fetch the associated user email from the session
-    user_email = sessions.get(session_id)
 
     # Respond with the user's email
     return jsonify({"email": user_email}), 200
