@@ -101,6 +101,8 @@ def get_reset_password_token():
 
 @app.route('/reset_password', methods=['PUT'])
 def update_password():
+    """
+    """
     email = request.form.get("email")
     reset_token = request.form.get("reset_token")
     new_password = request.form.get("new_password")
@@ -109,42 +111,6 @@ def update_password():
     except ValueError:
         abort(403)
     return jsonify({"email": email, "message": "Password updated"})
-
-
-@app.route("/reset_password", methods=["PUT"], strict_slashes=False)
-def update_password() -> str:
-    """
-    PUT /reset_password
-    Responsible for handling password reset requests by validating the
-    reset token and updating the user's password
-    """
-@app.route("/reset_password", methods=["PUT"], strict_slashes=False)
-def reset_user_password() -> str:
-    """PUT /reset_password
-    Responsible for handling password reset requests by validating the
-    reset token and updating the user's password
-    """
-    # Retrieve data from the request
-    user_email = request.form.get("email")
-    provided_reset_token = request.form.get("reset_token")
-    new_user_password = request.form.get("new_password")
-    
-    password_update_successful = False
-    try:
-        # Attempt to update the password using the provided reset token
-        AUTH.update_password(provided_reset_token, new_user_password)
-        password_update_successful = True
-    except ValueError:
-        # Handle invalid reset token or other related issues
-        password_update_successful = False
-    
-    # If the password update fails, return a 403 Forbidden response
-    if not password_update_successful:
-        abort(403, description="Invalid reset token or password update failed")
-    
-    # Return success response if the password update is successful
-    return jsonify({"email": user_email, "message": "Password updated"})
-
 
 
 if __name__ == '__main__':
