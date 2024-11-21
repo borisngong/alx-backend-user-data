@@ -2,7 +2,7 @@
 """
 Module for Flask app for user authentication
 """
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, redirect
 from auth import Auth
 
 AUTH = Auth()
@@ -57,13 +57,16 @@ def login() -> str:
 @app.route("/sessions", methods=["DELETE"], strict_slashes=False)
 def logout() -> str:
     """
-    Handles user logout by destroying the session
+    Responsible for handling user logout by destroying the session
     """
+    # Retrieve session_id from cookies
     session_id = request.cookies.get("session_id")
     user = AUTH.get_user_from_session_id(session_id)
     if user is None:
         abort(403)
+    # Destroy the session
     AUTH.destroy_session(user.id)
+    # redirects to homepage
     return redirect("/")
 
 
