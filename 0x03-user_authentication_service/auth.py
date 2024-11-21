@@ -47,7 +47,7 @@ class Auth:
 
     def valid_login(self, email: str, password: str) -> bool:
         """
-        Checks if a user's login details are valid.
+        Responsible for checking if a user's login details are valid
         """
         user = None
         try:
@@ -80,7 +80,7 @@ class Auth:
 
     def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
         """
-        Retrieves a user based on a given session ID
+        Responsible for retrieving a user based on a given session ID
         """
         user = None
         if session_id is None:
@@ -92,14 +92,16 @@ class Auth:
         return user
 
     def destroy_session(self, user_id: int) -> None:
-        """Destroys a session associated with a given user.
+        """
+        Responsible for destroying a session associated with a given user
         """
         if user_id is None:
             return None
         self._db.update_user(user_id, session_id=None)
 
     def get_reset_password_token(self, email: str) -> str:
-        """Generates a password reset token for a user.
+        """
+        Responsible for generating a password reset token for a user
         """
         user = None
         try:
@@ -113,7 +115,8 @@ class Auth:
         return reset_token
 
     def update_password(self, reset_token: str, password: str) -> None:
-        """Updates a user's password given the user's reset token.
+        """
+        Responsible for updating a user's password given the user's reset token
         """
         user = None
         try:
