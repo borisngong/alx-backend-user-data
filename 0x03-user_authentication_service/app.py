@@ -111,5 +111,31 @@ def update_password():
     return jsonify({"email": email, "message": "Password updated"})
 
 
+@app.route("/reset_password", methods=["PUT"], strict_slashes=False)
+def update_password() -> str:
+    """
+    PUT /reset_password
+    Responsible for handling password reset requests by validating the
+    reset token and updating the user's password
+    """
+    email = request.form.get("email")
+    reset_token = request.form.get("reset_token")
+    new_password = request.form.get("new_password")
+
+    if not email or not reset_token or not new_password:
+        abort(400, description="Missing email, reset_token, or new_password.")
+
+    try:
+        # Update the user's password using the AUTH service
+        AUTH.update_password(email, reset_token, new_password)
+    except ValueError:
+        # If the reset token is invalid, respond with 403
+        abort(403, description="Invalid reset token or email.")
+
+    # Respond with a success message if password update is successful
+    return jsonify({"email": email, "message": "Password updated"}), 200
+
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
