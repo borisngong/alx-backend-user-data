@@ -90,11 +90,11 @@ def get_reset_password_token():
     email = request.form.get('email')
 
     if not email or email not in users:
-        abort(403, description="Email not registered")
+        abort(403)
 
     reset_token = str(uuid.uuid4())
     reset_tokens[email] = reset_token
-    return jsonify({"email": email, "reset_token": reset_token}), 200
+    return jsonify({"email": email, "reset_token": reset_token})
 
 
 if __name__ == '__main__':
