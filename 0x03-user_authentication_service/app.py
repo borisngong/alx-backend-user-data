@@ -2,7 +2,7 @@
 """
 Module for working with Flask app's user authentication
 """
-from flask import Flask, jsonify, request, abort, redirect
+from flask import Flask, jsonify, request, abort, redirect, make_response
 from auth import Auth
 
 AUTH = Auth()
