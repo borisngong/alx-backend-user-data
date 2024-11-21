@@ -92,22 +92,17 @@ def logout() -> str:
     return redirect('/')
 
 
-@app.route('/profile', methods=['GET'])
+@app.route("/profile", methods=["GET"], strict_slashes=False)
 def profile() -> str:
+    """GET /profile
+    Return:
+        - The user's profile information.
     """
-    GET /profile route to retrieve user profile information.
-    Requires a valid session_id cookie.
-    """
-    session_id = request.cookies.get('session_id')
-
-    if not session_id:
-        return jsonify({"message": "session_id is required"}), 403
-
-    user_email = AUTH.get_user_from_session(session_id)
-    
-    if user_email is None:
-        return jsonify({"message": "session not found"}), 403
-    return jsonify({"email": user_email}), 200
+    session_id = request.cookies.get("session_id")
+    user = AUTH.get_user_from_session_id(session_id)
+    if user is None:
+        abort(403)
+    return jsonify({"email": user.email}), 200
 
 
 if __name__ == '__main__':
