@@ -87,14 +87,16 @@ def get_reset_password_token():
     """
     POST /reset_password endpoint to generate a password reset token
     """
-    email = request.form.get('email')
-
-    if not email or email not in users:
+        email = request.form.get("email")
+    reset_token = None
+    try:
+        reset_token = AUTH.get_reset_password_token(email)
+    except ValueError:
+        reset_token = None
+    if reset_token is None:
         abort(403)
-
-    reset_token = str(uuid.uuid4())
-    reset_tokens[email] = reset_token
-    return jsonify({"email": email, "reset_token": reset_token})
+    reset_tok    = jsonify({"email": email, "reset_token": reset_token}), 200
+    return reset_tok
 
 
 if __name__ == '__main__':
