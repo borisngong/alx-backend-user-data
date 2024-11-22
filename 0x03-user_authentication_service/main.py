@@ -48,8 +48,11 @@ def profile_logged(session_id: str) -> None:
     """Access profile while logged in."""
     cookies = {"session_id": session_id}
     response = requests.get(f"{BASE_URL}/profile", cookies=cookies)
-    assert response.status_code == 200, f"Profile access failed: {response.text}"
-    assert "email" in response.json(), "Profile response missing email field"
+    error_message = f"Profile access failed: {response.text}"
+    assert response.status_code == 200, error_message
+
+    missing_field_message = "Profile response missing email field"
+    assert "email" in response.json(), missing_field_message
 
 
 def log_out(session_id: str) -> None:
@@ -89,7 +92,8 @@ def update_password(email: str, reset_token: str, new_password: str) -> None:
     assert response.status_code == 200, (
         f"Update password failed: {response.text}"
     )
-    assert response.json() == {"email": email, "message": "password updated"}, (
+    assert response.json() == {"email": email, "message": "password updated"},
+    (
         "Unexpected response payload"
     )
 
